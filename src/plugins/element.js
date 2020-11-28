@@ -8,7 +8,10 @@ import {
   Header,
   Aside,
   Main,
-  Container
+  Container,
+  Menu,
+  Submenu,
+  MenuItem
 } from 'element-ui'
 // import { Form, FormItem } from 'element-ui'
 // import { Input } from 'element-ui'
@@ -20,4 +23,7 @@ Vue.use(Header)
 Vue.use(Aside)
 Vue.use(Main)
 Vue.use(Container)
+Vue.use(Menu)
+Vue.use(Submenu)
+Vue.use(MenuItem)
 Vue.prototype.$message = Message
