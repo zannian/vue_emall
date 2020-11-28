@@ -14,11 +14,18 @@
       > 退出 </el-button>
     </el-header>
     <el-container>
-      <el-aside width="200px">
+      <el-aside :width="isCollapse ? '64px':'200px'">
+        <div
+          class="toggle-button"
+          @click="toggleCollapse"
+        >|||</div>
         <el-menu
           background-color="#333744"
           text-color="#fff"
-          active-text-color="#ffd04b"
+          active-text-color="#569cb3"
+          unique-opened
+          :collapse="isCollapse"
+          :collapse-transition="false"
         >
           <!-- 一级菜单 -->
           <el-submenu
@@ -42,7 +49,7 @@
               <!-- 二级菜单模板 -->
               <template slot="title">
                 <!-- 图标 -->
-                <i :class="iconsObj[item.id]"></i>
+                <i class="el-icon-menu"></i>
                 <!-- 文本 -->
                 <span>{{subItem.authName}}</span>
               </template>
@@ -50,7 +57,9 @@
           </el-submenu>
         </el-menu>
       </el-aside>
-      <el-main>Main</el-main>
+      <el-main>
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
@@ -67,7 +76,8 @@ export default {
         101: 'iconfont icon-shangpin',
         102: 'iconfont icon-danju',
         145: 'iconfont icon-baobiao'
-      }
+      },
+      isCollapse: false
     }
   },
   created() {
@@ -85,6 +95,9 @@ export default {
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       this.menuList = res.data
       // console.log(res)
+    },
+    toggleCollapse() {
+      this.isCollapse = !this.isCollapse
     }
   }
 }
@@ -112,8 +125,23 @@ export default {
 }
 .el-aside {
   background-color: #333744;
+  user-select: none;
+  .el-menu {
+    border-right: none;
+  }
+  .toggle-button {
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    line-height: 100%;
+    background-color: #63646d;
+    cursor: pointer;
+  }
 }
 .el-main {
   background-color: #eaedf1;
+}
+.iconfont {
+  margin-right: 10px;
 }
 </style>
