@@ -11,7 +11,7 @@
         ref="LoginFormRef"
         class="login_form"
         :model="loginForm"
-        :rules="rules"
+        :rules="loginFormRules"
       >
         <!-- 用户名 -->
         <el-form-item prop="username">
@@ -49,15 +49,6 @@ export default {
   data() {
     return {
       loginForm: { username: 'admin', password: '123456' },
-      rules: {
-        name: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-        ],
-        region: [
-          { required: true, message: '请选择活动区域', trigger: 'change' }
-        ]
-      },
       loginFormRules: {
         username: [
           { required: true, message: '请输入登录名', trigger: 'blur' },
