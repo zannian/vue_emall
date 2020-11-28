@@ -27,4 +27,13 @@ export default {
 .home-container {
   height: 100%;
 }
+.el-header {
+  background-color: #373d41;
+}
+.el-aside {
+  background-color: #333744;
+}
+.el-main {
+  background-color: #eaedf1;
+}
 </style>
