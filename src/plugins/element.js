@@ -22,7 +22,9 @@ import {
   Switch,
   Pagination,
   Tooltip,
-  Dialog
+  Dialog,
+  MessageBox,
+  Tag
 } from 'element-ui'
 // import { Form, FormItem } from 'element-ui'
 // import { Input } from 'element-ui'
@@ -48,4 +50,6 @@ Vue.use(Switch)
 Vue.use(Pagination)
 Vue.use(Tooltip)
 Vue.use(Dialog)
+Vue.use(Tag)
 Vue.prototype.$message = Message
+Vue.prototype.$confirm = MessageBox.confirm
