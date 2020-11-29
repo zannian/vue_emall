@@ -26,6 +26,8 @@
           unique-opened
           :collapse="isCollapse"
           :collapse-transition="false"
+          :router='true'
+          :default-active="activePath"
         >
           <!-- 一级菜单 -->
           <el-submenu
@@ -42,9 +44,10 @@
             </template>
             <!-- 二级子菜单 -->
             <el-menu-item
-              :index="subItem.id+''"
+              :index="'/'+subItem.path"
               v-for="subItem in item.children"
               :key="subItem.id"
+              @click="saveNavState('/'+subItem.path)"
             >
               <!-- 二级菜单模板 -->
               <template slot="title">
@@ -77,12 +80,17 @@ export default {
         102: 'iconfont icon-danju',
         145: 'iconfont icon-baobiao'
       },
-      isCollapse: false
+      isCollapse: false,
+      activePath: '/welcome'
     }
   },
   created() {
     // 在 created 阶段请求左侧菜单数据
     this.getMenuList()
+  },
+  updated() {
+    this.activePath = window.location.hash.substr(1)
+    // console.log(this.activePath)
   },
   methods: {
     logout() {
@@ -94,10 +102,14 @@ export default {
       const { data: res } = await this.$http.get('menus')
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       this.menuList = res.data
-      // console.log(res)
+      // console.log(this.menuList)
     },
     toggleCollapse() {
       this.isCollapse = !this.isCollapse
+    },
+    saveNavState(path) {
+      window.sessionStorage.setItem('activePath', path)
+      this.activePath = path
     }
   }
 }
