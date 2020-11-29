@@ -75,12 +75,13 @@
           width="180px"
           align="center"
         >
-          <template>
+          <template slot-scope="scope">
             <!-- 修改 -->
             <el-button
               type="primary"
-              icon="el-icon-edit"
               size="mini"
+              icon="el-icon-edit"
+              @click="showEditDialog(scope.row.id)"
             ></el-button>
             <!-- 删除 -->
             <el-button
@@ -117,7 +118,7 @@
       </el-pagination>
     </el-card>
     <el-dialog
-      title="提示"
+      title="添加用户"
       :visible.sync="dialogVisible"
       width="30%"
       @close='addDialogClosed'
@@ -166,6 +167,46 @@
         >确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      title="修改信息"
+      :visible.sync="editDialogVisible"
+      width="30%"
+      @close="editDialogVisible= false"
+    >
+      <el-form
+        :model="editForm"
+        :rules="editFormRules"
+        ref="editFormRef"
+        label-width="70px"
+      >
+        <el-form-item label="用户名">
+          <el-input
+            v-model="editForm.username"
+            disabled
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="邮箱"
+          prop="email"
+        >
+          <el-input v-model="editForm.email"></el-input>
+        </el-form-item>
+        <el-form-item
+          label="电话"
+          prop="mobile"
+        >
+          <el-input v-model="editForm.mobile"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer">
+        <el-button @click="editDialogVisible= false">Cancel</el-button>
+        <el-button
+          type="primary"
+          @click="editUser"
+        >OK</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 <script>
@@ -189,6 +230,40 @@ export default {
       cb(new Error('请输入合法的手机号码'))
     }
     return {
+      editDialogVisible: false,
+      // 修改用户的表单数据
+      editForm: {
+        username: '',
+        email: '',
+        mobile: ''
+      },
+      // 修改表单的验证规则对象
+      editFormRules: {
+        email: [
+          {
+            required: true,
+            message: '请输入邮箱',
+            trigger: 'blur'
+          },
+          {
+            validator: checkEmail,
+            message: '邮箱格式不正确，请重新输入',
+            trigger: 'blur'
+          }
+        ],
+        mobile: [
+          {
+            required: true,
+            message: '请输入手机号码',
+            trigger: 'blur'
+          },
+          {
+            validator: checkMobile,
+            message: '手机号码不正确，请重新输入',
+            trigger: 'blur'
+          }
+        ]
+      },
       // 获取查询用户信息的参数
       queryInfo: {
         query: '',
@@ -230,6 +305,38 @@ export default {
     this.getUserList()
   },
   methods: {
+    editUser() {
+      // 用户点击修改表单中的确定按钮之后，验证表单数据
+      this.$refs.editFormRef.validate(async valid => {
+        if (!valid) return this.$message.error('请填写完整用户信息')
+        // 发送请求完成修改用户的操作
+        const { data: res } = await this.$http.put(
+          'users/' + this.editForm.id,
+          this.editForm
+        )
+        // 判断如果修改失败，就做提示
+        if (res.meta.status !== 200) return this.$message.error('修改用户失败')
+        // 修改成功的提示
+        this.$message.success('修改用户成功')
+        // 关闭对话框
+        this.editDialogVisible = false
+        // 重新请求最新的数据
+        this.getUserList()
+      })
+    },
+    // 展示编辑用户的对话框
+    async showEditDialog(id) {
+      // 发送请求根据id获取用户信息
+      const {
+        data: res
+      } = await this.$http.get('users/' + id)
+      // 判断如果添加失败，就做提示
+      if (res.meta.status !== 200) return this.$message.error('获取用户信息失败')
+      // 将获取到的数据保存到数据editForm中
+      this.editForm = res.data
+      // 显示弹出窗
+      this.editDialogVisible = true
+    },
     addUser() {
       // 点击确定按钮，添加新用户
       // 调用validate进行表单验证
